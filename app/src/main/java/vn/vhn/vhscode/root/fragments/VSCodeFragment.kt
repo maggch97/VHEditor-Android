@@ -258,7 +258,13 @@ class VSCodeFragment : Fragment() {
         val isSSL = mSession?.useSSL == true
         val protocol = if (isSSL) "https" else "http"
         val port = mSession?.port ?: throw Error("St wrong, no port obtained")
-        val url: String = "http://121.5.233.124:59933"
+        val url: String
+        if(mSession?.remote == true){
+            url = mSession?.remoteURL ?: throw Error("No remote url")
+        }else{
+            url = protocol + "://127.0.0.1:" + port + "/?_=" + System.currentTimeMillis()
+        }
+
         if (isSSL) {
             webView.clearCache(true)
             webView.clearSslPreferences()

@@ -267,6 +267,7 @@ class EditorHostActivity : FragmentActivity(), ServiceConnection,
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
                 val intent = result.data
+                val remoteURL = intent?.getStringExtra(NewSessionActivity.kRemoteCodeEditorURL);
                 when (intent?.getStringExtra(NewSessionActivity.kSessionType)) {
                     NewSessionActivity.kSessionTypeTerminal -> {
                         codeServerService?.sessionsHost?.createTermuxSession(
@@ -288,6 +289,16 @@ class EditorHostActivity : FragmentActivity(), ServiceConnection,
                             intent.getBooleanExtra(NewSessionActivity.kSessionAllInterfaces,
                                 true),
                             intent.getBooleanExtra(NewSessionActivity.kSessionSSL, true),
+                        )
+                    }
+                    NewSessionActivity.kSessionTypeRemoteCodeEditor -> {
+                        codeServerService?.sessionsHost?.createCodeEditorSession(
+                            GlobalSessionsManager.getNextSessionId(GlobalSessionsManager.SessionType.REMOTE_CODESERVER_EDITOR),
+                            "RemoteEditor",
+                            false,
+                            false,
+                            true,
+                            intent?.getStringExtra(NewSessionActivity.kRemoteCodeEditorURL)
                         )
                     }
                 }
